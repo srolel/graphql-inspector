@@ -91,8 +91,6 @@ export async function run() {
   const rules: Rule[] = core.getInput('rules').split('\n').join(',').split(',').filter(Boolean).map(resolveRule).filter(Boolean) as Rule[];
   const onUsage = core.getInput('onUsage');
   const config: ConsiderUsageConfig = onUsage ? {checkUsage: resolveUsageHandler(onUsage)} : {};
-  // const rules: Rule[] = [];
-  // const config = {}
 
   const octokit = github.getOctokit(token);
 
