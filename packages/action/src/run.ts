@@ -115,6 +115,7 @@ export async function run() {
   core.info(`Check ID: ${checkId}`);
 
   const schemaPointer = core.getInput('schema', { required: true });
+  const baseSchemaPointer = core.getInput('baseSchema');
 
   const loadFile = fileLoader({
     octokit,
@@ -127,7 +128,23 @@ export async function run() {
     return core.setFailed('Failed to find `schema` variable');
   }
 
-  let [schemaRef, schemaPath] = schemaPointer.split(':');
+  let schemaRef: string, schemaPath: string;
+  if (schemaPointer.includes(':')) {
+    if (baseSchemaPointer) {
+      const msg = 'baseSchema must not be defined if schema a ref';
+      core.error(msg);
+      return core.setFailed(msg);
+    }
+    [schemaRef, schemaPath] = schemaPointer.split(':');
+  } else {
+    if (!baseSchemaPointer) {
+      const msg = 'baseSchema must be defined if schema has no ref';
+      core.error(msg);
+      return core.setFailed(msg);
+    }
+    schemaRef = ref;
+    schemaPath = schemaPointer;
+  }
 
   if (useMerge && pullRequest?.state == 'open') {
     ref = `refs/pull/${pullRequest.number}/merge`;
@@ -152,8 +169,8 @@ export async function run() {
     endpoint
       ? printSchemaFromEndpoint(endpoint)
       : loadFile({
-          ref: schemaRef,
-          path: schemaPath,
+          ref: baseSchemaPointer ? ref : schemaRef,
+          path: baseSchemaPointer || schemaPath,
         }),
     isNewSchemaUrl
       ? printSchemaFromEndpoint(schemaPath)
