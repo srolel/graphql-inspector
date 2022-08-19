@@ -148,7 +148,7 @@ export async function run() {
 
   if (useMerge && pullRequest?.state == 'open') {
     ref = `refs/pull/${pullRequest.number}/merge`;
-    workspace = undefined;
+    if (!baseSchemaPointer) workspace = undefined;
     core.info(`EXPERIMENTAL - Using Pull Request ${ref}`);
 
     const baseRef = pullRequest.base?.ref;
@@ -308,7 +308,6 @@ function fileLoader({
     path: string;
     workspace?: string;
   }): Promise<string> {
-    console.log(file)
     if (file.workspace) {
       return readFileSync(resolve(file.workspace, file.path), {
         encoding: 'utf-8',
