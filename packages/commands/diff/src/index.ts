@@ -215,7 +215,7 @@ function reportNonBreakingChanges(changes: Change[]) {
   });
 }
 
-function resolveRule(name: string): Rule | undefined {
+export function resolveRule(name: string): Rule | undefined {
   const filepath = ensureAbsolute(name);
   if (existsSync(filepath)) {
     return require(filepath);
@@ -238,7 +238,7 @@ function resolveCompletionHandler(name: string): CompletionHandler | never {
   return mod?.default || mod;
 }
 
-function resolveUsageHandler(name: string): UsageHandler | never {
+export function resolveUsageHandler(name: string): UsageHandler | never {
   const filepath = ensureAbsolute(name);
 
   try {

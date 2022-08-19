@@ -14,6 +14,9 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { OctokitResponse } from '@octokit/types';
 import { batch } from './utils';
+import { Rule } from '@graphql-inspector/core';
+import { ConsiderUsageConfig } from 'packages/core/src/diff/rules/consider-usage';
+import { resolveRule, resolveUsageHandler } from '@graphql-inspector/diff-command';
 
 type OctokitInstance = ReturnType<typeof github.getOctokit>;
 interface PullRequest {
@@ -83,6 +86,13 @@ export async function run() {
   const endpoint: string = core.getInput('endpoint');
   const approveLabel: string =
     core.getInput('approve-label') || 'approved-breaking-change';
+
+
+  // const rules: Rule[] = core.getInput('rules').split('\n').join(',').split(',').filter(Boolean).map(resolveRule).filter(Boolean) as Rule[];
+  // const onUsage = core.getInput('onUsage');
+  // const config: ConsiderUsageConfig = onUsage ? {checkUsage: resolveUsageHandler(onUsage)} : {};
+  const rules: Rule[] = [];
+  const config = {}
 
   const octokit = github.getOctokit(token);
 
@@ -196,6 +206,8 @@ export async function run() {
     path: schemaPath,
     schemas,
     sources,
+    rules,
+    config
   });
 
   let conclusion = action.conclusion;

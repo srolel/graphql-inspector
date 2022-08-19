@@ -1,10 +1,11 @@
-import { diff as diffSchemas, CriticalityLevel, Change } from '@graphql-inspector/core';
+import { diff as diffSchemas, CriticalityLevel, Change, Rule } from '@graphql-inspector/core';
 import { GraphQLSchema, Source } from 'graphql';
 import axios from 'axios';
 
 import { CheckConclusion, ActionResult, Annotation, AnnotationLevel, PullRequest } from './types';
 import { getLocationByPath } from './location';
 import { parseEndpoint, isNil } from './utils';
+import { ConsiderUsageConfig } from 'packages/core/src/diff/rules/consider-usage';
 
 export type DiffInterceptor =
   | string
@@ -33,6 +34,8 @@ export async function diff({
   interceptor,
   pullRequests,
   ref,
+  rules,
+  config,
 }: {
   path: string;
   schemas: {
@@ -46,8 +49,10 @@ export async function diff({
   interceptor?: DiffInterceptor;
   pullRequests?: PullRequest[];
   ref?: string;
+  rules?: Rule[];
+  config?: ConsiderUsageConfig;
 }): Promise<ActionResult> {
-  let changes = await diffSchemas(schemas.old, schemas.new);
+  let changes = await diffSchemas(schemas.old, schemas.new, rules, config);
   let forcedConclusion: CheckConclusion | null = null;
 
   if (!changes || !changes.length) {
