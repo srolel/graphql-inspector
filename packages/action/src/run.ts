@@ -171,6 +171,7 @@ export async function run() {
       : loadFile({
           ref: baseSchemaPointer ? ref : schemaRef,
           path: baseSchemaPointer || schemaPath,
+          workspace: baseSchemaPointer ? workspace : undefined
         }),
     isNewSchemaUrl
       ? printSchemaFromEndpoint(schemaPath)
