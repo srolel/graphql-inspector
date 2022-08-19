@@ -148,7 +148,7 @@ export async function run() {
 
   if (useMerge && pullRequest?.state == 'open') {
     ref = `refs/pull/${pullRequest.number}/merge`;
-    if (!baseSchemaPointer) workspace = undefined;
+    workspace = undefined;
     core.info(`EXPERIMENTAL - Using Pull Request ${ref}`);
 
     const baseRef = pullRequest.base?.ref;
