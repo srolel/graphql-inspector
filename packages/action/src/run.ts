@@ -88,11 +88,11 @@ export async function run() {
     core.getInput('approve-label') || 'approved-breaking-change';
 
 
-  // const rules: Rule[] = core.getInput('rules').split('\n').join(',').split(',').filter(Boolean).map(resolveRule).filter(Boolean) as Rule[];
-  // const onUsage = core.getInput('onUsage');
-  // const config: ConsiderUsageConfig = onUsage ? {checkUsage: resolveUsageHandler(onUsage)} : {};
-  const rules: Rule[] = [];
-  const config = {}
+  const rules: Rule[] = core.getInput('rules').split('\n').join(',').split(',').filter(Boolean).map(resolveRule).filter(Boolean) as Rule[];
+  const onUsage = core.getInput('onUsage');
+  const config: ConsiderUsageConfig = onUsage ? {checkUsage: resolveUsageHandler(onUsage)} : {};
+  // const rules: Rule[] = [];
+  // const config = {}
 
   const octokit = github.getOctokit(token);
 
